@@ -239,11 +239,35 @@
     </footer>
 
     <script>
+        // Liste des films
+        const films = [
+            {
+                "titre": "Film 1",
+                "image": "https://via.placeholder.com/150",
+                "description": "Description du film 1",
+                "date": "01 Janvier 2024",
+                "heure": "20:00",
+                "lieu": "Cinéma A",
+                "trailer": "https://www.youtube.com/watch?v=example1",
+                "reservation": "https://www.example.com/reserve1"
+            },
+            {
+                "titre": "Film 2",
+                "image": "https://via.placeholder.com/150",
+                "description": "Description du film 2",
+                "date": "15 Janvier 2024",
+                "heure": "18:30",
+                "lieu": "Cinéma B",
+                "trailer": "https://www.youtube.com/watch?v=example2",
+                "reservation": "https://www.example.com/reserve2"
+            }
+            // Ajoute d'autres films ici
+        ];
+
         // Fonction pour afficher les films
         function afficherFilms() {
             const filmList = document.getElementById('film-list');
             filmList.innerHTML = ''; // Effacer le contenu précédent
-            const films = JSON.parse(localStorage.getItem('films')) || [];
             
             films.forEach((film, index) => {
                 const filmDiv = document.createElement('div');
