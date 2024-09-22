@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Génération Ciné Ado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #e50914;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #e50914;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #c40712;
+        }
+
+        .film-list {
+            margin-top: 20px;
+        }
+
+        .film {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+
+        .film button {
+            background-color: #e50914;
+            border: none;
+            padding: 5px 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .film button:hover {
+            background-color: #c40712;
+        }
+
+        .login {
+            margin-bottom: 20px;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Connexion Administrateur</h2>
+
+    <div class="login">
+        <div class="error" id="error-message"></div>
+        <div class="form-group">
+            <label for="admin-username">Identifiant</label>
+            <input type="text" id="admin-username" placeholder="Identifiant" />
+        </div>
+        <div class="form-group">
+            <label for="admin-password">Mot de passe</label>
+            <input type="password" id="admin-password" placeholder="Mot de passe" />
+        </div>
+        <button onclick="login()">Se connecter</button>
+    </div>
+
+    <div id="admin-section" style="display:none;">
+        <h2>Administration des Films</h2>
+
+        <!-- Formulaire d'ajout de film -->
+        <div class="form-group">
+            <label for="new-film-title">Titre du film</label>
+            <input type="text" id="new-film-title" placeholder="Titre du film" />
+        </div>
+        <div class="form-group">
+            <label for="new-film-description">Description du film</label>
+            <textarea id="new-film-description" placeholder="Description du film"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="new-film-date">Date</label>
+            <input type="text" id="new-film-date" placeholder="Date" />
+        </div>
+        <div class="form-group">
+            <label for="new-film-heure">Heure</label>
+            <input type="text" id="new-film-heure" placeholder="Heure" />
+        </div>
+        <div class="form-group">
+            <label for="new-film-lieu">Lieu</label>
+            <input type="text" id="new-film-lieu" placeholder="Lieu" />
+        </div>
+        <div class="form-group">
+            <label for="new-film-trailer">URL de la bande-annonce</label>
+            <input type="url" id="new-film-trailer" placeholder="URL de la bande-annonce" />
+        </div>
+        <div class="form-group">
+            <label for="new-film-image">URL de l'image</label>
+            <input type="url" id="new-film-image" placeholder="URL de l'image" />
+        </div>
+        <div class="form-group">
+            <label for="new-film-reservation">Lien de réservation</label>
+            <input type="url" id="new-film-reservation" placeholder="Lien de réservation" />
+        </div>
+        <button onclick="addFilm()">Ajouter Film</button>
+
+        <!-- Liste des films -->
+        <div class="film-list" id="film-list"></div>
+    </div>
+
+    <script>
+        const ADMIN_USERNAME = "hobin.bourbon";
+        const ADMIN_PASSWORD = "HOBN!l00S";
+
+        function login() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                document.getElementById('admin-section').style.display = 'block';
+                document.querySelector('.login').style.display = 'none';
+                afficherFilms();
+            } else {
+                errorMessage.textContent = "Identifiant ou mot de passe incorrect.";
+            }
+        }
+
+        // Fonction pour afficher les films
+        function afficherFilms() {
+            const filmList = document.getElementById('film-list');
+            filmList.innerHTML = ''; // Effacer le contenu précédent
+            const films = JSON.parse(localStorage.getItem('films')) || [];
+            
+            films.forEach((film, index) => {
+                filmList.innerHTML += `
+                    <div class="film">
+                        <h3>${film.titre}</h3>
+                        <p>${film.description}</p>
+                        <p><strong>Date :</strong> ${film.date}</p>
+                        <p><strong>Heure :</strong> ${film.heure}</p>
+                        <p><strong>Lieu :</strong> ${film.lieu}</p>
+                        <p><strong>Bande-annonce :</strong> <a href="${film.trailer}" target="_blank">Voir</a></p>
+                        <p><strong>Lien de réservation :</strong> <a href="${film.reservation}" target="_blank">Réserver</a></p>
+                        <button onclick="deleteFilm(${index})">Supprimer</button>
+                    </div>
+                `;
+            });
+        }
+
+        // Fonction pour ajouter un film
+        function addFilm() {
+            const titre = document.getElementById('new-film-title').value;
+            const description = document.getElementById('new-film-description').value;
+            const date = document.getElementById('new-film-date').value;
+            const heure = document.getElementById('new-film-heure').value;
+            const lieu = document.getElementById('new-film-lieu').value;
+            const trailer = document.getElementById('new-film-trailer').value;
+            const image = document.getElementById('new-film-image').value;
+            const reservation = document.getElementById('new-film-reservation').value;
+
+            const film = { titre, description, date, heure, lieu, trailer, image, reservation };
+            
+            const films = JSON.parse(localStorage.getItem('films')) || [];
+            films.push(film);
+            localStorage.setItem('films', JSON.stringify(films));
+
+            // Réinitialiser le formulaire
+            document.getElementById('new-film-title').value = '';
+            document.getElementById('new-film-description').value = '';
+            document.getElementById('new-film-date').value = '';
+            document.getElementById('new-film-heure').value = '';
+            document.getElementById('new-film-lieu').value = '';
+            document.getElementById('new-film-trailer').value = '';
+            document.getElementById('new-film-image').value = '';
+            document.getElementById('new-film-reservation').value = '';
+
+            afficherFilms();
+        }
+
+        // Fonction pour supprimer un film
+        function deleteFilm(index) {
+            const films = JSON.parse(localStorage.getItem('films')) || [];
+            films.splice(index, 1);
+            localStorage.setItem('films', JSON.stringify(films));
+            afficherFilms();
+        }
+    </script>
+
+</body>
+</html>
