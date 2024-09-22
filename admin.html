@@ -13,27 +13,22 @@
             background-color: #f8f9fa;
             padding: 20px;
         }
-
         h2 {
             color: #e50914;
         }
-
         .form-group {
             margin-bottom: 15px;
         }
-
         label {
             display: block;
             margin-bottom: 5px;
         }
-
-        input, textarea {
+        input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
         button {
             background-color: #e50914;
             color: white;
@@ -42,15 +37,12 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #c40712;
         }
-
         .film-list {
             margin-top: 20px;
         }
-
         .film {
             padding: 10px;
             border: 1px solid #ccc;
@@ -58,7 +50,6 @@
             margin-bottom: 10px;
             background-color: #fff;
         }
-
         .film button {
             background-color: #e50914;
             border: none;
@@ -66,15 +57,9 @@
             color: white;
             cursor: pointer;
         }
-
         .film button:hover {
             background-color: #c40712;
         }
-
-        .login {
-            margin-bottom: 20px;
-        }
-
         .error {
             color: red;
             margin-bottom: 10px;
@@ -100,41 +85,41 @@
 
     <div id="admin-section" style="display:none;">
         <h2>Administration des Films</h2>
-
-        <!-- Formulaire d'ajout de film -->
-        <div class="form-group">
-            <label for="new-film-title">Titre du film</label>
-            <input type="text" id="new-film-title" placeholder="Titre du film" />
-        </div>
-        <div class="form-group">
-            <label for="new-film-description">Description du film</label>
-            <textarea id="new-film-description" placeholder="Description du film"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="new-film-date">Date</label>
-            <input type="text" id="new-film-date" placeholder="Date" />
-        </div>
-        <div class="form-group">
-            <label for="new-film-heure">Heure</label>
-            <input type="text" id="new-film-heure" placeholder="Heure" />
-        </div>
-        <div class="form-group">
-            <label for="new-film-lieu">Lieu</label>
-            <input type="text" id="new-film-lieu" placeholder="Lieu" />
-        </div>
-        <div class="form-group">
-            <label for="new-film-trailer">URL de la bande-annonce</label>
-            <input type="url" id="new-film-trailer" placeholder="URL de la bande-annonce" />
-        </div>
-        <div class="form-group">
-            <label for="new-film-image">URL de l'image</label>
-            <input type="url" id="new-film-image" placeholder="URL de l'image" />
-        </div>
-        <div class="form-group">
-            <label for="new-film-reservation">Lien de réservation</label>
-            <input type="url" id="new-film-reservation" placeholder="Lien de réservation" />
-        </div>
-        <button onclick="addFilm()">Ajouter Film</button>
+        <form id="filmForm">
+            <div class="form-group">
+                <label for="new-film-title">Titre du film</label>
+                <input type="text" id="new-film-title" placeholder="Titre du film" required />
+            </div>
+            <div class="form-group">
+                <label for="new-film-description">Description du film</label>
+                <textarea id="new-film-description" placeholder="Description du film" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="new-film-date">Date</label>
+                <input type="date" id="new-film-date" required />
+            </div>
+            <div class="form-group">
+                <label for="new-film-heure">Heure</label>
+                <input type="time" id="new-film-heure" required />
+            </div>
+            <div class="form-group">
+                <label for="new-film-lieu">Lieu</label>
+                <input type="text" id="new-film-lieu" placeholder="Lieu" required />
+            </div>
+            <div class="form-group">
+                <label for="new-film-trailer">URL de la bande-annonce</label>
+                <input type="url" id="new-film-trailer" placeholder="URL de la bande-annonce" required />
+            </div>
+            <div class="form-group">
+                <label for="new-film-image">URL de l'image</label>
+                <input type="url" id="new-film-image" placeholder="URL de l'image" required />
+            </div>
+            <div class="form-group">
+                <label for="new-film-reservation">Lien de réservation</label>
+                <input type="url" id="new-film-reservation" placeholder="Lien de réservation" required />
+            </div>
+            <button type="submit">Ajouter Film</button>
+        </form>
 
         <!-- Liste des films -->
         <div class="film-list" id="film-list"></div>
@@ -158,12 +143,34 @@
             }
         }
 
-        // Fonction pour afficher les films
+        document.getElementById('filmForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const films = JSON.parse(localStorage.getItem('films')) || [];
+            const newFilm = {
+                titre: document.getElementById('new-film-title').value,
+                description: document.getElementById('new-film-description').value,
+                date: document.getElementById('new-film-date').value,
+                heure: document.getElementById('new-film-heure').value,
+                lieu: document.getElementById('new-film-lieu').value,
+                trailer: document.getElementById('new-film-trailer').value,
+                image: document.getElementById('new-film-image').value,
+                reservation: document.getElementById('new-film-reservation').value
+            };
+
+            films.push(newFilm);
+            localStorage.setItem('films', JSON.stringify(films));
+
+            // Réinitialiser le formulaire
+            this.reset();
+            afficherFilms();
+        });
+
         function afficherFilms() {
             const filmList = document.getElementById('film-list');
             filmList.innerHTML = ''; // Effacer le contenu précédent
             const films = JSON.parse(localStorage.getItem('films')) || [];
-            
+
             films.forEach((film, index) => {
                 filmList.innerHTML += `
                     <div class="film">
@@ -180,37 +187,6 @@
             });
         }
 
-        // Fonction pour ajouter un film
-        function addFilm() {
-            const titre = document.getElementById('new-film-title').value;
-            const description = document.getElementById('new-film-description').value;
-            const date = document.getElementById('new-film-date').value;
-            const heure = document.getElementById('new-film-heure').value;
-            const lieu = document.getElementById('new-film-lieu').value;
-            const trailer = document.getElementById('new-film-trailer').value;
-            const image = document.getElementById('new-film-image').value;
-            const reservation = document.getElementById('new-film-reservation').value;
-
-            const film = { titre, description, date, heure, lieu, trailer, image, reservation };
-            
-            const films = JSON.parse(localStorage.getItem('films')) || [];
-            films.push(film);
-            localStorage.setItem('films', JSON.stringify(films));
-
-            // Réinitialiser le formulaire
-            document.getElementById('new-film-title').value = '';
-            document.getElementById('new-film-description').value = '';
-            document.getElementById('new-film-date').value = '';
-            document.getElementById('new-film-heure').value = '';
-            document.getElementById('new-film-lieu').value = '';
-            document.getElementById('new-film-trailer').value = '';
-            document.getElementById('new-film-image').value = '';
-            document.getElementById('new-film-reservation').value = '';
-
-            afficherFilms();
-        }
-
-        // Fonction pour supprimer un film
         function deleteFilm(index) {
             const films = JSON.parse(localStorage.getItem('films')) || [];
             films.splice(index, 1);
