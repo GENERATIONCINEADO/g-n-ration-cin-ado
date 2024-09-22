@@ -57,59 +57,6 @@
             color: #e50914;
         }
 
-        .hero {
-            background-image: url('https://source.unsplash.com/1600x900/?cinema');
-            background-size: cover;
-            background-position: center;
-            height: 500px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            color: white;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .hero h2 {
-            font-size: 48px;
-            z-index: 1;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-
-        .hero p {
-            font-size: 20px;
-            z-index: 1;
-            margin: 20px 0;
-        }
-
-        .btn {
-            background-color: #e50914;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 18px;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #c40712;
-            transform: scale(1.05);
-        }
-
         section {
             padding: 50px 0;
         }
@@ -133,39 +80,14 @@
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             text-align: center;
+            padding: 20px;
+            width: 300px;
             position: relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-            overflow: hidden;
         }
 
         .film img {
-            width: 80%;
-            transition: transform 0.3s;
-        }
-
-        .film:hover {
-            transform: scale(1.05);
-        }
-
-        .film-details {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translate(-50%, 10px);
-            background: white;
+            width: 100%;
             border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-            width: 300px;
-        }
-
-        .film.open .film-details {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, 0);
         }
 
         footer {
@@ -174,10 +96,6 @@
             text-align: center;
             padding: 20px 0;
             margin-top: 50px;
-        }
-
-        footer p {
-            margin: 0;
         }
     </style>
 </head>
@@ -200,38 +118,9 @@
         </div>
     </header>
 
-    <section id="accueil">
-        <div class="hero">
-            <h2>Bienvenue à Génération Ciné Ado</h2>
-            <p>Le meilleur des films et événements pour les ados, à portée de clic.</p>
-            <a href="#evenements" class="btn">Découvrir les événements</a>
-        </div>
-    </section>
-
-    <section id="evenements" class="container">
-        <h2>Prochains événements</h2>
-        <div class="event-list">
-            <div class="event">
-                <h3>Festival du film ado 2024</h3>
-                <p>Date : 12-14 Octobre 2024</p>
-                <p>Lieu : Cinéma du centre-ville</p>
-            </div>
-            <div class="event">
-                <h3>Nuit du film d'horreur ado</h3>
-                <p>Date : 31 Octobre 2024</p>
-                <p>Lieu : Cinéma de quartier</p>
-            </div>
-        </div>
-    </section>
-
     <section id="films" class="container">
         <h2>Films à l'affiche</h2>
         <div class="film-list" id="film-list"></div>
-    </section>
-
-    <section id="contact" class="container">
-        <h2>Contact</h2>
-        <p>Pour plus d'informations, contactez-nous à <a href="mailto:generationcineado@gmail.com">generationcineado@gmail.com</a>.</p>
     </section>
 
     <footer>
@@ -239,43 +128,17 @@
     </footer>
 
     <script>
-        // Liste des films
-        const films = [
-            {
-                "titre": "Film 1",
-                "image": "https://via.placeholder.com/150",
-                "description": "Description du film 1",
-                "date": "01 Janvier 2024",
-                "heure": "20:00",
-                "lieu": "Cinéma A",
-                "trailer": "https://www.youtube.com/watch?v=example1",
-                "reservation": "https://www.example.com/reserve1"
-            },
-            {
-                "titre": "Film 2",
-                "image": "https://via.placeholder.com/150",
-                "description": "Description du film 2",
-                "date": "15 Janvier 2024",
-                "heure": "18:30",
-                "lieu": "Cinéma B",
-                "trailer": "https://www.youtube.com/watch?v=example2",
-                "reservation": "https://www.example.com/reserve2"
-            }
-            // Ajoute d'autres films ici
-        ];
-
         // Fonction pour afficher les films
         function afficherFilms() {
             const filmList = document.getElementById('film-list');
             filmList.innerHTML = ''; // Effacer le contenu précédent
+            const films = JSON.parse(localStorage.getItem('films')) || [];
             
-            films.forEach((film, index) => {
-                const filmDiv = document.createElement('div');
-                filmDiv.classList.add('film');
-                filmDiv.innerHTML = `
-                    <img src="${film.image}" alt="${film.titre}" onclick="toggleDetails(${index})" />
-                    <h3>${film.titre}</h3>
-                    <div class="film-details">
+            films.forEach(film => {
+                filmList.innerHTML += `
+                    <div class="film">
+                        <img src="${film.image}" alt="${film.titre}" />
+                        <h3>${film.titre}</h3>
                         <p>${film.description}</p>
                         <p><strong>Date :</strong> ${film.date}</p>
                         <p><strong>Heure :</strong> ${film.heure}</p>
@@ -284,17 +147,10 @@
                         <p><strong>Lien de réservation :</strong> <a href="${film.reservation}" target="_blank">Réserver</a></p>
                     </div>
                 `;
-                filmDiv.appendChild(filmDiv.querySelector('.film-details'));
-                filmList.appendChild(filmDiv);
             });
         }
 
-        function toggleDetails(index) {
-            const filmDivs = document.querySelectorAll('.film');
-            filmDivs[index].classList.toggle('open');
-        }
-
-        // Charger les films à l'affichage
+        // Charger les films lors du chargement de la page
         document.addEventListener('DOMContentLoaded', afficherFilms);
     </script>
 </body>
