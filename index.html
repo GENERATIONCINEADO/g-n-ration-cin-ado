@@ -266,7 +266,6 @@
         }
 
         function toggleDetails(index) {
-            const filmList = JSON.parse(localStorage.getItem('films')) || [];
             const filmDivs = document.querySelectorAll('.film');
             filmDivs[index].classList.toggle('open');
         }
